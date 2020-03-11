@@ -4,7 +4,8 @@
   "description": "\"IO block based shooter game\"",
   "main": "game.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node game.js"
   },
   "author": "VanishedMC",
   "dependencies": {

@@ -1,0 +1,45 @@
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+#game {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+canvas {
+    background-color: seashell;
+}
+
+#chat {
+    display: grid;
+    max-height: 680px;
+    min-height: 680px;
+    max-width: 285px;
+    grid-template-rows: 80% 20%;
+    justify-self: right;
+    min-width: 300px;
+}
+
+#chatbox {
+    margin-left: 20%;
+}
+
+input[type="text"] {
+    height: 50px;
+    text-align: center;
+}
+
+#scroll {
+    overflow-y: scroll;
+    overflow-x: hidden;
+    word-break: break-all;
+    padding-right: 10px;
+    background-color: lightgray;
+}
+
+body {
+    max-height: 100%;
+    overflow-y: hidden;
+}

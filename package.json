@@ -1,0 +1,14 @@
+{
+  "name": "shootergame",
+  "version": "0.0.1",
+  "description": "\"IO block based shooter game\"",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "VanishedMC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}

@@ -22,6 +22,7 @@ class Game {
         this.keyboard = new Keyboard(this);
 
         this.socket = io();
+        this.socketId = null;
         this.network();
 
         requestAnimationFrame(this.render);
@@ -30,20 +31,24 @@ class Game {
     }
 
     network() {
-        this.socket.on('players', (players) => {
-            this.players = players;
-        })
+        this.socket.on('connect', () => {
+            this.socketId = this.socket.io.engine.id; 
         
-        this.socket.on('disconnect', () => {
-            this.running = false;
-        });
-        
-        this.socket.on('reconnect', () => {
-            this.running = true;
-        });
-        
-        this.socket.on('pong', (ms) => {
-            this.latency = ms;
+            this.socket.on('players', (players) => {
+                this.players = players;
+            })
+            
+            this.socket.on('disconnect', () => {
+                this.running = false;
+            });
+            
+            this.socket.on('reconnect', () => {
+                this.running = true;
+            });
+            
+            this.socket.on('pong', (ms) => {
+                this.latency = ms;
+            });
         });
     }
 
@@ -68,6 +73,9 @@ class Game {
         let text = `${this.fps} fps, ${this.latency}ms`;
         this.ctx.fillText(text, this.width - 10 - this.ctx.measureText(text).width, this.height-10);
 
+        this.ctx.fillStyle = "blue";
+        this.ctx.fillRect(this.player.x, this.player.y, 64, 64);
+
         this.players.forEach(player => {
             this.ctx.fillStyle = "red";
             this.ctx.fillRect(player.x, player.y, 64, 64);
@@ -86,4 +94,5 @@ class Game {
     }
 }
 
-new Game();
+// FOR DEVELOPING / TESTING ONLY
+window.game = new Game();

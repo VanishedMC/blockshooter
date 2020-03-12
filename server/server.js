@@ -3,8 +3,8 @@ const Player = require("./player.js");
 
 class Server {
     constructor() {
-        this._lobbies = []
-        this._players = [];
+        this.lobbies = []
+        this.players = [];
 
         let newLobby = new Lobby(this, this.lobbies.length);
         this.lobbies.push(newLobby);
@@ -39,11 +39,6 @@ class Server {
         return this.lobbies.find(lobby => lobby.players.includes(player));
     }
 
-    // Get all lobbies
-    get lobbies() {
-        return this._lobbies;
-    }
-
     // Delete a lobby, except if its the last open lobby
     deleteLobby(lobby) {
         let indexOf = this.lobbies.indexOf(lobby);
@@ -57,11 +52,6 @@ class Server {
     // Get a player from its socket object
     getPlayerBySocket(socket) {
         return this.players.find(player => player.socket === socket);
-    }
-
-    // Get all players
-    get players() {
-        return this._players;
     }
 
     // Create a player object, add it to the global list

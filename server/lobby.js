@@ -1,8 +1,8 @@
 class Lobby {
     constructor(server, lobbyId) {
-        this._server = server;
-        this._id = lobbyId;
-        this._players = [];
+        this.server = server;
+        this.id = lobbyId;
+        this.players = [];
     }
 
     joinPlayer(player) {
@@ -14,7 +14,7 @@ class Lobby {
         this.players.splice(indexOf, 1);
 
         if(this.players.length == 0) {
-            this._server.deleteLobby(this);
+            this.server.deleteLobby(this);
         }
     }
 
@@ -22,16 +22,8 @@ class Lobby {
         broadcast(message, {});
     }
 
-    broadcast(messa, data) {
+    broadcast(message, data) {
         this.players.forEach(player => player.socket.emit(message, data));
-    }
-
-    get id() {
-        return this._id;
-    }
-
-    get players() {
-        return this._players;
     }
 }
 

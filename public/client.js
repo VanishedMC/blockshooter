@@ -24,7 +24,8 @@ class Game {
         this.socket = io();
         this.network();
 
-        requestAnimationFrame(this.loop);
+        requestAnimationFrame(this.render);
+        setInterval(this.tick, 1000 / 60);
         return this;
     }
 
@@ -46,9 +47,9 @@ class Game {
         });
     }
 
-    loop = (frameTime) => {
+    render = (frameTime) => {
         if(!this.running) {
-            requestAnimationFrame(this.loop);
+            requestAnimationFrame(this.render);
             return;
         }
         /* 
@@ -76,9 +77,12 @@ class Game {
          * Ticking
          */
         this.player.move();
-        this.socket.emit('position', {x: this.player.x, y: this.player.y});
 
-        requestAnimationFrame(this.loop);
+        requestAnimationFrame(this.render);
+    }
+
+    tick = () => {
+        this.socket.emit('position', {x: this.player.x, y: this.player.y});
     }
 }
 

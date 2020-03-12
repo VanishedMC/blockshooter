@@ -1,7 +1,7 @@
 const Lobby = require("./lobby.js");
 const Player = require("./player.js");
 
-module.exports = class Server {
+class Server {
     constructor() {
         this._lobbies = []
         this._players = [];
@@ -11,52 +11,57 @@ module.exports = class Server {
     }
 
     getAvailableLobby() {
-        let lobby = this.lobbies.slice().filter((lobby) => lobby.players.length < 4)
-        .sort(() => Math.random() - 0.5)
-        .sort((a, b) => {
-            let aEven = a.players.length % 2 == 0;
-            let bEven = b.players.length % 2 == 0;
-            return bEven - aEven;
-        })[0];
-
-        if(!lobby) {
-            let newLobby = new Lobby(this, this.lobbies.length);
-            this.lobbies.push(newLobby);
-            return newLobby;
-        } else {
-            return lobby;
+        const lobbies = this.lobbies.filter(it => it.players.length < 4);
+        const oddPlayers = lobbies.filter(it => it.players.length % 2 == 1);
+    
+        if (oddPlayers.length > 0) {
+            return oddPlayers[Math.floor(Math.random() * oddPlayers.length)];
         }
+    
+        if (lobbies.length > 0) {
+            return lobbies[Math.floor(Math.random() * lobbies.length)];
+        }
+    
+        const newLobby = new Lobby(this, this.lobbies.length);
+        this.lobbies.push(newLobby);
+
+        return newLobby;
     }
 
+    /* Lobby getters / setters */
     // Find a lobby by its ID
     getLobbyById(id) {
-        for (let i = 0; i < this.lobbies.length; i++) {
-            if (this.lobbies[i].id === id) {
-                return this.lobbies[i];
-            }
-        }
-
-        return null;
+        return this.lobbies.find(lobby => lobby.id === id);
     }
 
     // Find a lobby a player is in
     getLobbyByPlayer(player) {
-        for (let i = 0; i < this.lobbies.length; i++) {
-            if (this.lobbies[i].players.includes(player)) {
-                return this.lobbies[i];
-            }
-        }
+        return this.lobbies.find(lobby => lobby.players.includes(player));
+    }
 
-        return null;
+    // Get all lobbies
+    get lobbies() {
+        return this._lobbies;
     }
 
     // Delete a lobby, except if its the last open lobby
     deleteLobby(lobby) {
         let indexOf = this.lobbies.indexOf(lobby);
-        if(this.lobbies.length <= 0) {
+        if(this.lobbies.length <= 1) {
             return;
         }
         this.lobbies.splice(indexOf, 1);
+    }
+
+    /* Player getters / setters */
+    // Get a player from its socket object
+    getPlayerBySocket(socket) {
+        return this.players.find(player => player.socket === socket);
+    }
+
+    // Get all players
+    get players() {
+        return this._players;
     }
 
     // Create a player object, add it to the global list
@@ -66,24 +71,12 @@ module.exports = class Server {
         return newPlayer;
     }
 
-    // Get a player from its socket object
-    getPlayerBySocket(socket) {
-        for (let i = 0; i < this.players.length; i++) {
-            if (this.players[i].socket === socket) {
-                return this.players[i];
-            }
-        }
-
-        return null;
-    }
-
-    // Get all lobbies
-    get lobbies() {
-        return this._lobbies;
-    }
-
-    // Get all players
-    get players() {
-        return this._players;
+    // Remove a player from the lobbies its in, and the global list
+    removePlayer(player) {
+        let indexOf = this.players.indexOf(player);
+        this.players.splice(indexOf, 1);
+        this.getLobbyByPlayer(player).removePlayer(player);
     }
 }
+
+module.exports = Server;

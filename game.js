@@ -18,7 +18,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         let player = server.getPlayerBySocket(socket);
-        server.getLobbyByPlayer(player).removePlayer(player);
+        server.removePlayer(player);
 
         console.clear();
         console.log(server.lobbies);

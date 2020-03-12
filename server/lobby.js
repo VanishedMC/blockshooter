@@ -1,6 +1,6 @@
-module.exports = class Lobby {
+class Lobby {
     constructor(server, lobbyId) {
-        this.server = server;
+        this._server = server;
         this._id = lobbyId;
         this._players = [];
     }
@@ -14,7 +14,7 @@ module.exports = class Lobby {
         this.players.splice(indexOf, 1);
 
         if(this.players.length == 0) {
-            this.server.deleteLobby(this);
+            this._server.deleteLobby(this);
         }
     }
 
@@ -23,8 +23,7 @@ module.exports = class Lobby {
     }
 
     broadcast(messa, data) {
-        // TODO
-        console.log(`sending message ${message} with data ${data} to ${this.players}`);
+        this.players.forEach(player => player.socket.emit(message, data));
     }
 
     get id() {
@@ -35,3 +34,5 @@ module.exports = class Lobby {
         return this._players;
     }
 }
+
+module.exports = Lobby;

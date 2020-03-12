@@ -1,4 +1,4 @@
-module.exports = class Player {
+class Player {
     constructor(socket) {
         this._socket = socket;
         this._x = 0;
@@ -32,3 +32,5 @@ module.exports = class Player {
         return this._socket;
     }
 }
+
+module.exports = Player;

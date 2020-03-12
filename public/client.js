@@ -30,7 +30,6 @@ class Game {
 
     network() {
         this.socket.on('players', (players) => {
-            console.log(players);
             this.players = players;
         })
         

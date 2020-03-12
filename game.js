@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const http = require("http").Server(app);
@@ -7,7 +8,7 @@ const Lobby = require("./server/lobby.js");
 const Server = require("./server/server.js");
 const server = new Server();
 
-const PORT = 8080;
+const PORT = process.env.PORT;
 
 io.on('connection', (socket) => {
     let player = server.createPlayer(socket);

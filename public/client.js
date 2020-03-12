@@ -3,23 +3,16 @@
 import Canvas from "./Canvas.js";
 
 class Game {
-    /* 
-     * Game objects / variables 
-     */
-    screen = null;
-    ctx = null;
-    width = null;
-    height = null;
-
-    lastFrame = 0;
-    fps = 0;
-    running = true;
-
     constructor() {
         this.screen = new Canvas();
         this.ctx = this.screen.ctx;
         this.width = this.screen.width;
         this.height = this.screen.height;
+
+        this.running = true;
+        this.lastFrame = 0;
+        this.latency = 0;
+        this.fps = 0;
 
         console.log("constructor");
 
@@ -46,7 +39,8 @@ class Game {
          * Main render loop
          */
         this.ctx.fillStyle = "Black";
-        this.ctx.fillText(`${this.fps} fps`, this.width-50, this.height-10);
+        let text = `${this.fps} fps, ${this.latency}ms`;
+        this.ctx.fillText(text, this.width - 10 - this.ctx.measureText(text).width, this.height-10);
 
         requestAnimationFrame(this.loop);
     }
@@ -61,4 +55,8 @@ socket.on('disconnect', () => {
 
 socket.on('reconnect', () => {
     gameObj.running = true;
+});
+
+socket.on('pong', (ms) => {
+    gameObj.latency = ms;
 });

@@ -1,7 +1,7 @@
 /*
  * Create a high defition canvas adjusted to screen size 
  */
-export default class Canvas {
+class Canvas {
 	constructor() {
 		this.setup();
 	}
@@ -33,27 +33,13 @@ export default class Canvas {
 		return canvas;
 	}
 
-	get ctx() {
-		return this._ctx;
-	}
-
-	set ctx(value) {
-		this._ctx = value;
-	}
-
-	get width() {
-		return this._width;
-	}
-
-	get height() {
-		return this._height;
-	}
-
 	setup() {
 		const canvas = this.createHiDPICanvas(document.documentElement.clientWidth, document.documentElement.clientHeight);
 		this.ctx = canvas.getContext("2d");
-		this._width = canvas.style.width.substr(0, canvas.style.width.length-2);
-		this._height = canvas.style.height.substr(0, canvas.style.height.length-2);
+		this.width = canvas.style.width.substr(0, canvas.style.width.length-2);
+		this.height = canvas.style.height.substr(0, canvas.style.height.length-2);
 		document.querySelector("#game").appendChild(canvas);
 	}
 }
+
+export default Canvas;

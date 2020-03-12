@@ -1,6 +1,6 @@
 class Player {
     constructor(socket) {
-        this.socket = socket;
+        this.id = socket.id;
         this.x = 0;
         this.y = 0;
         this.velX = 0;
@@ -10,6 +10,11 @@ class Player {
     move() {
         x += velX;
         y += velY;
+    }
+
+    setPosition(position) {
+        this.x = position.x;
+        this.y = position.y;
     }
 }
 

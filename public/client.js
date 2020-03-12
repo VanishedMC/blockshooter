@@ -1,6 +1,8 @@
 "use strict"
 
-import Canvas from "./Canvas.js";
+import Canvas from "./canvas.js";
+import Player from "./player.js";
+import Keyboard from "./keyboard.js";
 
 class Game {
     constructor() {
@@ -9,17 +11,41 @@ class Game {
         this.width = this.screen.width;
         this.height = this.screen.height;
 
+        this.players = [];
+
         this.running = true;
         this.lastFrame = 0;
         this.latency = 0;
         this.fps = 0;
 
-        console.log("constructor");
+        this.player = new Player(10, 10);
+        this.keyboard = new Keyboard(this);
+
+        this.socket = io();
+        this.network();
 
         requestAnimationFrame(this.loop);
         return this;
     }
 
+    network() {
+        this.socket.on('players', (players) => {
+            console.log(players);
+            this.players = players;
+        })
+        
+        this.socket.on('disconnect', () => {
+            this.running = false;
+        });
+        
+        this.socket.on('reconnect', () => {
+            this.running = true;
+        });
+        
+        this.socket.on('pong', (ms) => {
+            this.latency = ms;
+        });
+    }
 
     loop = (frameTime) => {
         if(!this.running) {
@@ -36,27 +62,26 @@ class Game {
         this.ctx.clearRect(0, 0, this.width, this.height);
         
         /* 
-         * Main render loop
+         * Rendering
          */
         this.ctx.fillStyle = "Black";
         let text = `${this.fps} fps, ${this.latency}ms`;
         this.ctx.fillText(text, this.width - 10 - this.ctx.measureText(text).width, this.height-10);
 
+        this.players.forEach(player => {
+            console.log(player);
+            this.ctx.fillStyle = "red";
+            this.ctx.fillRect(player.x, player.y, 64, 64);
+        });
+
+        /* 
+         * Ticking
+         */
+        this.player.move();
+        this.socket.emit('position', {x: this.player.x, y: this.player.y});
+
         requestAnimationFrame(this.loop);
     }
 }
 
-const gameObj = new Game();
-const socket = io();
-
-socket.on('disconnect', () => {
-    gameObj.running = false;
-});
-
-socket.on('reconnect', () => {
-    gameObj.running = true;
-});
-
-socket.on('pong', (ms) => {
-    gameObj.latency = ms;
-});
+new Game();

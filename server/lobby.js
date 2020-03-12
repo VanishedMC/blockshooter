@@ -5,12 +5,12 @@ class Lobby {
         this.players = [];
     }
 
-    joinPlayer(player) {
-        this.players.push(player);
+    joinPlayer(id) {
+        this.players.push(id);
     }
 
-    removePlayer(player) {
-        let indexOf = this.players.indexOf(player);
+    removePlayer(id) {
+        let indexOf = this.players.indexOf(id);
         this.players.splice(indexOf, 1);
 
         if(this.players.length == 0) {
@@ -18,12 +18,24 @@ class Lobby {
         }
     }
 
+    syncPosition() {
+        this.broadcast('players', this.players.map(id => {
+            let player = this.server.getPlayerById(id);
+            return {
+                x: player.x,
+                y: player.y
+            };
+         }));
+    }
+
     broadcast(message) {
         broadcast(message, {});
     }
 
     broadcast(message, data) {
-        this.players.forEach(player => player.socket.emit(message, data));
+        this.players.forEach(id => {
+            this.server.io.sockets.connected[id].emit(message, data);
+        });
     }
 }
 

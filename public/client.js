@@ -18,7 +18,7 @@ class Game {
         this.latency = 0;
         this.fps = 0;
 
-        this.player = new Player(10, 10);
+        this.player = new Player(0, 0);
         this.keyboard = new Keyboard(this);
 
         this.socket = io();
@@ -26,7 +26,6 @@ class Game {
         this.network();
 
         requestAnimationFrame(this.render);
-        setInterval(this.tick, 1000 / 60);
         return this;
     }
 
@@ -37,6 +36,11 @@ class Game {
             this.socket.on('players', (players) => {
                 this.players = players;
             })
+
+            this.socket.on('syncPosition', (position) => {
+                this.player.x = position.x;
+                this.player.y = position.y;
+            });
             
             this.socket.on('disconnect', () => {
                 this.running = false;
@@ -87,6 +91,7 @@ class Game {
          */
         this.player.move();
 
+        this.tick();
         requestAnimationFrame(this.render);
     }
 

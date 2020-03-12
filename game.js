@@ -9,14 +9,17 @@ const Server = require("./server/server.js");
 const server = new Server(io);
 
 const PORT = process.env.PORT;
-const TPS = 130;
+const TPS = 120;
 
 io.on('connection', (socket) => {
     server.createPlayer(socket);
     server.getAvailableLobby().joinPlayer(socket.id);
 
     socket.on('position', (position) => {
-        server.getPlayerById(socket.id).setPosition(position);
+        const player = server.getPlayerById(socket.id);
+        if(player.setPosition(position) === "diffTooLarge") {
+            socket.emit("syncPosition", {x: player.x, y: player.y});
+        }
     });
 
     socket.on('disconnect', () => {

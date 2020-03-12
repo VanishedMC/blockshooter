@@ -68,7 +68,6 @@ class Game {
         this.ctx.fillText(text, this.width - 10 - this.ctx.measureText(text).width, this.height-10);
 
         this.players.forEach(player => {
-            console.log(player);
             this.ctx.fillStyle = "red";
             this.ctx.fillRect(player.x, player.y, 64, 64);
         });

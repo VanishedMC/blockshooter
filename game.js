@@ -9,6 +9,7 @@ const Server = require("./server/server.js");
 const server = new Server(io);
 
 const PORT = process.env.PORT;
+const TPS = 130;
 
 io.on('connection', (socket) => {
     server.createPlayer(socket);
@@ -24,12 +25,9 @@ io.on('connection', (socket) => {
     });
 });
 
-const loop = () => {
+setInterval(() => {
     server.lobbies.forEach(lobby => lobby.syncPosition());
-
-    setTimeout(loop);
-}
-loop();
+}, 1000 / TPS);
 
 app.use('/', express.static(`${__dirname}/public`));
 http.listen(PORT)

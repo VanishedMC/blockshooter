@@ -22,6 +22,7 @@ class Lobby {
         this.broadcast('players', this.players.map(id => {
             let player = this.server.getPlayerById(id);
             return {
+                id: id,
                 x: player.x,
                 y: player.y
             };

@@ -77,6 +77,7 @@ class Game {
         this.ctx.fillRect(this.player.x, this.player.y, 64, 64);
 
         this.players.forEach(player => {
+            if(player.id === this.socketId) return;
             this.ctx.fillStyle = "red";
             this.ctx.fillRect(player.x, player.y, 64, 64);
         });

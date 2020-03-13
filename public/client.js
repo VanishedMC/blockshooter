@@ -25,7 +25,7 @@ class Game {
         this.socketId = null;
         this.network();
 
-        requestAnimationFrame(this.render);
+        requestAnimationFrame(this.gameloop);
         return this;
     }
 
@@ -56,46 +56,45 @@ class Game {
         });
     }
 
-    render = (frameTime) => {
+    gameloop = (frameTime) => {
         if(!this.running) {
-            requestAnimationFrame(this.render);
+            requestAnimationFrame(this.gameloop);
             return;
         }
         /* 
          * Frame time and fps management
          */
-        let delta = frameTime - this.lastFrame;
+        let delta = (frameTime - this.lastFrame) / 1000;
         this.lastFrame = frameTime;
-        this.fps = 1 / (delta / 1000);
-        this.fps = Math.round((this.fps + Number.EPSILON) * 100) / 100
+        this.fps = 1 / delta;
+        this.fps = Math.round(this.fps);
+
         this.ctx.clearRect(0, 0, this.width, this.height);
-        
-        /* 
-         * Rendering
-         */
+
+        this.tick(delta);
+        this.render();
+
+        requestAnimationFrame(this.gameloop);
+    }
+
+    render = () => {
         this.ctx.fillStyle = "Black";
         let text = `${this.fps} fps, ${this.latency}ms`;
         this.ctx.fillText(text, this.width - 10 - this.ctx.measureText(text).width, this.height-10);
 
-        this.ctx.fillStyle = "blue";
-        this.ctx.fillRect(this.player.x, this.player.y, 64, 64);
+        this.player.render(this.ctx);
 
         this.players.forEach(player => {
             if(player.id === this.socketId) return;
+
             this.ctx.fillStyle = "red";
             this.ctx.fillRect(player.x, player.y, 64, 64);
         });
-
-        /* 
-         * Ticking
-         */
-        this.player.move();
-
-        this.tick();
-        requestAnimationFrame(this.render);
     }
 
-    tick = () => {
+    tick = (delta) => {
+        this.player.move(delta);
+
         this.socket.emit('position', {x: this.player.x, y: this.player.y});
     }
 }

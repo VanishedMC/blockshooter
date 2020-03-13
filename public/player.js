@@ -6,12 +6,12 @@ class Player {
         this.y = y;
         this.velX = 0;
         this.velY = 0;
-        this.speed = 5;
+        this.speed = 5 / 0.016;
     }
 
-    move() {
-        this.x += this.velX;
-        this.y += this.velY;
+    move(delta) {
+        this.x += this.velX * delta;
+        this.y += this.velY * delta;
     }
 
     render(ctx) {
